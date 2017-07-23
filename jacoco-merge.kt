@@ -3,12 +3,28 @@ import java.io.File
 fun main(args: Array<String>){
   val path = "c:/temp/docs"
 
-  //walk top down
+  //print traversal - walk top down
+  //printWalkTopDown(path)
+
+  //printWalkBottomUp - walk bottom up
+  //printWalkBottomUp(path)
+
+  val jacocoFiles = File(path).walk().filter{
+    it.extension == "exec"
+  }
+  jacocoFiles.forEach{
+    println(it)
+  }
+
+}
+
+fun printWalkTopDown(path: String){
   File(path).walk().forEach{
     println("${labelForDirOrFile(it)} $it")
   }
+}
 
-  //walk bottom up
+fun printWalkBottomUp(path: String){
   File(path).walkBottomUp().forEach{
     println("${labelForDirOrFile(it)} $it")
   }
