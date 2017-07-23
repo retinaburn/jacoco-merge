@@ -10,10 +10,13 @@ fun main(args: Array<String>){
   //printWalkBottomUp(path)
 
   val jacocoFiles = File(path).walk().filter{
-    it.extension == "exec"
+    !it.isDirectory && //we only want files
+    it.parentFile.name == "jacoco" && //whose parent dir is jacoco
+    it.name == "index.html"
   }
+
   jacocoFiles.forEach{
-    println(it)
+    println("$it")
   }
 
 }
