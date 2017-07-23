@@ -1,7 +1,10 @@
 import java.io.File
 
 fun main(args: Array<String>){
-  val path = "c:/temp/docs"
+  val path = if (args.size > 0) args[0] else "c:/temp/docs"
+
+  val pathCount = File(path).toPath().getNameCount()
+  val newIndexFilePath = path+"/index.html"
 
   //print traversal - walk top down
   //printWalkTopDown(path)
@@ -15,9 +18,23 @@ fun main(args: Array<String>){
     it.name == "index.html"
   }
 
+  println("Target path: $path")
+  var fileLinks = ""
   jacocoFiles.forEach{
-    println("$it")
+    println("$it = ${it.relativeTo(File(path))}")
+    val relativePath = it.relativeTo(File(path))
+    val packageName = it.toPath().getName(pathCount)
+    fileLinks += """<a href="$relativePath">$packageName</a><br/>
+    """
   }
+
+  val htmlText = """
+    <html>
+      ${fileLinks}
+    </html>
+    """
+
+  File(newIndexFilePath).writeText(htmlText)
 
 }
 
