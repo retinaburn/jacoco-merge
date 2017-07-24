@@ -33,6 +33,10 @@ fun main(args: Array<String>){
 
     println("Matches for ${f}")
     val footerResults = getFooterResults(html);
+    print("Results: ")
+    footerResults.forEach{
+      print("'$it' - ")
+    }
 
     /*matches?.groups?.forEach{
       print("Matches: ${it}")
@@ -72,18 +76,13 @@ fun getFooterResults(html: String): List<String> {
     println("Footer: $footer")
     if (footer != null) {
       val fields = resultRegex.findAll(footer)
-      print("Results: ")
+      //add each parsed field to the list
       fields.forEach{
-        //print("${it.groups.get(1)?.value} ")
-        if (it.groups.get(1)?.value != null){
-          val x = it.groups.get(1)
-          if (x != null){
-            val y = x.value
-            results.add(y)
-          }
+        it.groups.get(1)?.value?.let{
+          results.add(it)
         }
       }
-      println("$results")
+      //println("$results")
     }
 
   }
