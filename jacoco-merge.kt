@@ -1,7 +1,20 @@
 import java.io.File
+/**
+** jacoco-merge
+**
+** Simple tool to generate an html file with links
+** to sub-projects that contain jacoco results with
+** a summary of the results for each entry
+**
+** java -jar jacoco-jar /path/to/project/folders
+**
+*/
+
+//regex to pull out the table footer from jacoco results
 val footerRegex: Regex = Regex(
   """.*<tfoot>(.*)</tfoot>.*"""
   )
+//regex to pull each field from the jacoco results footer
 val resultRegex: Regex = Regex(
   """([\w, %]+)</td>"""
   )
