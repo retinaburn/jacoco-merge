@@ -11,53 +11,52 @@ fun main(args: Array<String>){
 
   val newIndexFilePath = path+"/index.html"
 
-
-  //get list of Files that contain the jacoco index files
+  //get list of packages that contain the jacoco index files
   val jacocoPackages = mutableListOf<File>()
   File(path).listFiles().forEach{
-    if (it.isDirectory){
-      if (it.resolve(File("target/site/jacoco/index.html")).exists()){
+    if (it.isDirectory &&
+      it.resolve(File("target/site/jacoco/index.html")).exists()){
         jacocoPackages.add(it)
-      }
     }
   }
 
+  /*
+  * For each package with jacoco
+    - open the index.html file and pull out the results in the table footer
+    - generate the entry for the html file using the jacoco results
+  */
   println("Found jacoco index files in:")
   var fileLinks = ""
   jacocoPackages.forEach{
     println("${it.name}")
+
+    val html = it.resolve(File("target/site/jacoco/index.html")).readText()
+    val footerResults = getJacocoResultsFromFooter(html);
+
     val relativePath = "${it.name}/target/site/jacoco/index.html"
-
-    val f = it.resolve(File("target/site/jacoco/index.html"))
-    val html = f.readText()
-
-    //println("Matches for ${f}")
-    val footerResults = getFooterResults(html);
-    /*print("Results: ")
-    footerResults.forEach{
-      print("'$it' - ")
-    }*/
-
-    /*matches?.groups?.forEach{
-      print("Matches: ${it}")
-    }*/
-    /*<tr><td>Missed Instructions</td><td>Cov.</td><td>Missed Branches</td><td>Cov.</td><td>Missed</td><td>Cxty</td><td>Missed</td><td>Lines</td><td>Missed</td><td>Methods</td><td>Missed</td><td>Classes</td></tr>
-    <tr><td>${footerResults.get(1)}</td><td>${footerResults.get(2)}</td><td>${footerResults.get(3)}</td><td>${footerResults.get(4)}</td><td>${footerResults.get(5)}</td><td>${footerResults.get(6)}</td><td>${footerResults.get(7)}</td><td>${footerResults.get(8)}</td><td>${footerResults.get(9)}</td><td>${footerResults.get(10)}</td><td>${footerResults.get(11)}</td><td>${footerResults.get(12)}</td></tr>*/
-
-    //println()
-    fileLinks += """<a href="$relativePath">${it.name}</a><br/>
-    <table>
-    <tr><td>Missed Instructions</td><td>Cov.</td><td>Missed Branches</td><td>Cov.</td></tr>
-    <tr><td>${footerResults.get(1)}</td><td>${footerResults.get(2)}</td><td>${footerResults.get(3)}</td><td>${footerResults.get(4)}</td></tr>
-    </table><br/>
-    """
+    fileLinks += generateEntryForHtmlFile(relativePath, it, footerResults)
   }
 
+  generateHtmlFile(newIndexFilePath, fileLinks)?.let{
+    println("Wrote html index file to $it")
+  }
 
-  generateHtmlFile(newIndexFilePath, fileLinks)
 }
 
-fun generateHtmlFile(indexPath: String, fileLinks: String){
+fun generateEntryForHtmlFile(path: String, file: File, footerResults: List<String>): String{
+  val entry = """<a href="$path">${file.name}</a><br/>
+  <table>
+  <tr><td>Missed Instructions</td><td>Cov.</td><td>Missed Branches</td><td>Cov.</td></tr>
+  <tr><td>${footerResults.get(1)}</td>
+  <td>${footerResults.get(2)}</td>
+  <td>${footerResults.get(3)}</td>
+  <td>${footerResults.get(4)}</td></tr>
+  </table><br/>
+  """
+  return entry
+}
+
+fun generateHtmlFile(indexPath: String, fileLinks: String): String?{
   val htmlText = """
 <html>
   ${fileLinks}
@@ -66,11 +65,10 @@ fun generateHtmlFile(indexPath: String, fileLinks: String){
 
   //println(htmlText)
   File(indexPath).writeText(htmlText)
-  println("Wrote html index file to $indexPath")
-
+  return indexPath
 }
 
-fun getFooterResults(html: String): List<String> {
+fun getJacocoResultsFromFooter(html: String): List<String> {
   var results = ArrayList<String>()
   val matches = footerRegex.matchEntire(html)
 
