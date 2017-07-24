@@ -20,6 +20,11 @@ fun main(args: Array<String>){
     """
   }
 
+  
+  generateHtmlFile(newIndexFilePath, fileLinks)
+}
+
+fun generateHtmlFile(indexPath: String, fileLinks: String){
   val htmlText = """
 <html>
   ${fileLinks}
@@ -29,4 +34,5 @@ fun main(args: Array<String>){
   println(htmlText)
   File(newIndexFilePath).writeText(htmlText)
   println("Wrote html index file to $newIndexFilePath")
+
 }
