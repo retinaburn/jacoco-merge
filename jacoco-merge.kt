@@ -31,12 +31,12 @@ fun main(args: Array<String>){
     val f = it.resolve(File("target/site/jacoco/index.html"))
     val html = f.readText()
 
-    println("Matches for ${f}")
+    //println("Matches for ${f}")
     val footerResults = getFooterResults(html);
-    print("Results: ")
+    /*print("Results: ")
     footerResults.forEach{
       print("'$it' - ")
-    }
+    }*/
 
     /*matches?.groups?.forEach{
       print("Matches: ${it}")
@@ -44,12 +44,12 @@ fun main(args: Array<String>){
     /*<tr><td>Missed Instructions</td><td>Cov.</td><td>Missed Branches</td><td>Cov.</td><td>Missed</td><td>Cxty</td><td>Missed</td><td>Lines</td><td>Missed</td><td>Methods</td><td>Missed</td><td>Classes</td></tr>
     <tr><td>${footerResults.get(1)}</td><td>${footerResults.get(2)}</td><td>${footerResults.get(3)}</td><td>${footerResults.get(4)}</td><td>${footerResults.get(5)}</td><td>${footerResults.get(6)}</td><td>${footerResults.get(7)}</td><td>${footerResults.get(8)}</td><td>${footerResults.get(9)}</td><td>${footerResults.get(10)}</td><td>${footerResults.get(11)}</td><td>${footerResults.get(12)}</td></tr>*/
 
-    println()
+    //println()
     fileLinks += """<a href="$relativePath">${it.name}</a><br/>
     <table>
     <tr><td>Missed Instructions</td><td>Cov.</td><td>Missed Branches</td><td>Cov.</td></tr>
     <tr><td>${footerResults.get(1)}</td><td>${footerResults.get(2)}</td><td>${footerResults.get(3)}</td><td>${footerResults.get(4)}</td></tr>
-    </table>
+    </table><br/>
     """
   }
 
@@ -64,7 +64,7 @@ fun generateHtmlFile(indexPath: String, fileLinks: String){
 </html>
 """
 
-  println(htmlText)
+  //println(htmlText)
   File(indexPath).writeText(htmlText)
   println("Wrote html index file to $indexPath")
 
