@@ -91,7 +91,7 @@ fun getJacocoResultsFromFooter(html: String): List<String> {
        //print("Match 1: ${matches.groups.get(1)}")
     val footer =  matches.groups.get(1)?.value;
     //println("Footer: $footer")
-    if (footer != null) {
+    footer?.let{
       val fields = resultRegex.findAll(footer)
       //add each parsed field to the list
       fields.forEach{
@@ -99,7 +99,6 @@ fun getJacocoResultsFromFooter(html: String): List<String> {
           results.add(it)
         }
       }
-      //println("$results")
     }
 
   }
