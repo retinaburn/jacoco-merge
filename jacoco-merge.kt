@@ -41,11 +41,11 @@ fun main(args: Array<String>){
   println("Found jacoco index files in:")
   var fileLinks = ""
   jacocoPackages.forEach{
-    println("${it.name}")
+    print("${it.name}")
 
     val html = it.resolve(File("target/site/jacoco/index.html")).readText()
     val footerResults = getJacocoResultsFromFooter(html);
-
+    println("  ${footerResults.get(2)} ${footerResults.get(4)}")
     val relativePath = "${it.name}/target/site/jacoco/index.html"
     fileLinks += generateEntryForHtmlFile(relativePath, it, footerResults)
   }
